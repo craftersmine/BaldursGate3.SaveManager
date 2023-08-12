@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="LSLib">
+      <HintPath>..\Libraries\Norbyte.LSLib\LSLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
