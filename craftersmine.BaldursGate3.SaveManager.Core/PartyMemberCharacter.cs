@@ -11,23 +11,27 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
     public class PartyMemberCharacter
     {
         [JsonPropertyName("Classes")]
-        public CharacterClass[] Classes { get; private set; }
-        public int CurrentLevelExperience { get; private set; }
-        public int TotalExperience { get; private set; }
-        public int Level { get; private set; }
-        public string Origin { get; private set; }
-        // TODO: convert array to vector
-        public Vector3 Position { get; private set; }
-        public string Race { get; private set; }
-        public string SubRegion { get; private set; }
+        public CharacterClass[] Classes { get; init; }
+        [JsonPropertyName("Experience Points (Current level)")]
+        public int CurrentLevelExperience { get; init; }
+        [JsonPropertyName("Experience Points (Total)")]
+        public int TotalExperience { get; init; }
+        [JsonPropertyName("Level")]
+        public int Level { get; init; }
+        [JsonPropertyName("Origin")]
+        public string Origin { get; init; }
+        [JsonPropertyName("Race")]
+        public string Race { get; init; }
+        [JsonPropertyName("Subregion")]
+        public string Subregion { get; init; }
 
     }
 
     public class CharacterClass
     {
         [JsonPropertyName("Main")]
-        public string MainClass { get; private set; }
+        public string MainClass { get; init; }
         [JsonPropertyName("Sub")]
-        public string SubClass { get; private set; }
+        public string SubClass { get; init; }
     }
 }
