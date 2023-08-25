@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using LSLib;
 using LSLib.LS;
 
@@ -10,6 +11,10 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
         private Package package;
 
         public string FullPath { get; }
+        public SaveInformation SaveInformation { get; }
+        public string ScreenshotPath { get; }
+        public string LeaderName { get; }
+        public DateTime LastModified { get; }
 
         public BaldursGateSave(string fullPath)
         {
@@ -29,8 +34,34 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
                 if (fileInfo is null)
                     throw new InvalidFormatException("File missing SaveInfo.json. Probably not a saved game!");
 
-                Json package.Files.FirstOrDefault(p => p.Name.ToLowerInvariant() == "saveinfo.json").MakeStream()
+                using (Stream fileStream = package.Files
+                           .FirstOrDefault(p => p.Name.ToLowerInvariant() == "saveinfo.json")!.MakeStream())
+                    SaveInformation = JsonSerializer.Deserialize<SaveInformation>(fileStream)!;
+
+                LastModified = File.GetLastWriteTimeUtc(FullPath);
+                
+                ScreenshotPath = Path.ChangeExtension(FullPath, "webp");
+
+                AbstractFileInfo? meta = package.Files.FirstOrDefault(p => p.Name.ToLowerInvariant() == "meta.lsf");
+                if (fileInfo is null)
+                    throw new InvalidFormatException("File missing meta.lsf. Probably not a saved game!");
+
+                using (LSFReader metaReader = new LSFReader(meta.MakeStream()))
+                {
+                    Resource res = metaReader.Read();
+                    LeaderName = res.Regions["MetaData"].Children["MetaData"][0].Attributes["LeaderName"].ToString();
+                }
             }
+        }
+
+        public override string ToString()
+        {
+            return LeaderName + " - " + SaveInformation.Name;
+        }
+
+        public void Delete()
+        {
+            Directory.Delete(Path.GetDirectoryName(FullPath), true);
         }
     }
 }
