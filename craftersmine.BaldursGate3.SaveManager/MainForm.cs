@@ -16,6 +16,8 @@ namespace craftersmine.BaldursGate3.SaveManager
             //DirectoryInfo savesDir = new DirectoryInfo("D:\\_TEMP\\Test");
             DirectoryInfo savesDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Larian Studios", "Baldur's Gate 3", "PlayerProfiles", "Public", "Savegames", "Story"));
 
+            Text = "Baldur's Gate 3 Saves Manager - " + savesDir.FullName;
+
             foreach (DirectoryInfo saveDir in savesDir.EnumerateDirectories())
             {
                 string saveFile = saveDir.EnumerateFiles("*.lsv", SearchOption.TopDirectoryOnly).First().FullName;
