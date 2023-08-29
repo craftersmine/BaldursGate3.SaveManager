@@ -108,5 +108,143 @@ namespace craftersmine.BaldursGate3.SaveManager
                     break;
             }
         }
+
+        private SaveArchiver? currentArchiver;
+
+        private async void archiveAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (RequestOutputFile(out string filename))
+                {
+                    using (currentArchiver = new SaveArchiver(saves.ToArray(), filename))
+                    {
+                        currentArchiver.OnArchivingStatusChanged += Archiver_OnArchivingStatusChanged;
+                        currentArchiver.OnArchiveCreated += Archiver_OnArchiveCreated;
+                        await currentArchiver.CreateArchiveAsync();
+                        if (currentArchiver is not null)
+                            currentArchiver.Dispose();
+                        currentArchiver = null;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("An error has occurred! " + exception.Message, "Error!", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void Archiver_OnArchiveCreated(object? sender, ArchivingCompletedEventArgs e)
+        {
+            if (InvokeRequired)
+                Invoke(SetStatusCompleted, e.IsCancelled, ((SaveArchiver)sender).OutputFile);
+            else
+                SetStatusCompleted(e.IsCancelled, ((SaveArchiver)sender).OutputFile);
+        }
+
+        private void SetStatusCompleted(bool cancelled, string outputFile)
+        {
+            if (!cancelled)
+            {
+                status.Text = "Archiving completed! Archive: " + outputFile;
+                statusProgress.Visible = false;
+                cancelButton.Visible = false;
+            }
+            else
+            {
+                status.Text = "Archiving cancelled by user!";
+                statusProgress.Visible = false;
+                cancelButton.Visible = false;
+            }
+        }
+
+        private void Archiver_OnArchivingStatusChanged(object? sender, ArchivingStatusEventArgs e)
+        {
+            if (InvokeRequired)
+                Invoke(SetStatusChanged, e.Save, e.Total, e.Processed);
+            else
+                SetStatusChanged(e.Save, e.Total, e.Processed);
+        }
+
+        private void SetStatusChanged(BaldursGateSave currentSave, int total, int processed)
+        {
+            float progress = ((float)processed / (float)total) * 100f;
+            status.Text = string.Format("Archiving save: {0}... {1}/{2} - {3:F2}%", currentSave.ToString(), processed,
+                total, progress);
+            statusProgress.Value = (int)progress;
+            statusProgress.Visible = true;
+            cancelButton.Visible = true;
+        }
+
+        private bool RequestOutputFile(out string filename)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.OverwritePrompt = true;
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.Filter = "Zip Archives (*.zip)|*.zip|All Files (*.*)|*.*";
+                saveFileDialog.SupportMultiDottedExtensions = true;
+                saveFileDialog.AutoUpgradeEnabled = true;
+                saveFileDialog.ShowHelp = false;
+                saveFileDialog.Title = "Select the output saves backup archive file";
+                switch (saveFileDialog.ShowDialog())
+                {
+                    case DialogResult.OK:
+                        filename = saveFileDialog.FileName;
+                        return true;
+                    case DialogResult.Cancel:
+                        filename = string.Empty;
+                        return false;
+                }
+            }
+
+            filename = string.Empty;
+            return false;
+        }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            switch (MessageBox.Show("Do you really want to cancel creating archive?", "Cancel archive creation",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+            {
+                case DialogResult.Yes:
+                    currentArchiver?.Cancel();
+                    break;
+                case DialogResult.No:
+                    break;
+            }
+        }
+
+        private async void archiveSelected_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (savesList.CheckedItems.Count <= 0)
+                {
+                    MessageBox.Show("No saves selected to archive!", "No saves selected!", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (RequestOutputFile(out string filename))
+                {
+                    using (currentArchiver = new SaveArchiver(savesList.CheckedItems.Cast<BaldursGateSave>().ToArray(), filename))
+                    {
+                        currentArchiver.OnArchivingStatusChanged += Archiver_OnArchivingStatusChanged;
+                        currentArchiver.OnArchiveCreated += Archiver_OnArchiveCreated;
+                        await currentArchiver.CreateArchiveAsync();
+                        if (currentArchiver is not null)
+                            currentArchiver.Dispose();
+                        currentArchiver = null;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("An error has occurred! " + exception.Message, "Error!", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
     }
 }
