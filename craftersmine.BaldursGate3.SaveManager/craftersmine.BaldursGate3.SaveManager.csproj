@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <Company>craftersmine</Company>
+	  <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
