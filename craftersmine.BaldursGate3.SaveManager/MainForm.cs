@@ -36,7 +36,19 @@ namespace craftersmine.BaldursGate3.SaveManager
             {
                 byte[] data = File.ReadAllBytes(((BaldursGateSave)savesList.SelectedItem).ScreenshotPath);
                 saveImage.BackgroundImage = webpDecoder.DecodeFromBytes(data, data.Length);
+                FillSaveInfo(((BaldursGateSave)savesList.SelectedItem));
             }
+        }
+
+        private void FillSaveInfo(BaldursGateSave save)
+        {
+            saveName.Text = string.Format("Save Name: {0}", save.SaveInformation.Name);
+            leaderName.Text = string.Format("Leader Name: {0}", save.LeaderName);
+            gameVersion.Text = string.Format("Game Version: {0}", save.SaveInformation.GameVersion);
+            difficulty.Text = string.Format("Difficulty: {0}", string.Join(", ", save.SaveInformation.Difficulty));
+            currentWorldLevel.Text = string.Format("Current World Level: {0}", save.SaveInformation.CurrentLevel);
+            activePartyCount.Text = string.Format("Party Members Count: {0} entities (players/characters/companions)",
+                save.SaveInformation.ActiveParty.Characters.Length);
         }
 
         private void deleteCurrentSaveClick(object sender, EventArgs e)
