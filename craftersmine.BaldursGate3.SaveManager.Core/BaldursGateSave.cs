@@ -15,6 +15,7 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
         public string ScreenshotPath { get; }
         public string LeaderName { get; }
         public DateTime LastModified { get; }
+        public string SaveRoot { get; }
 
         public BaldursGateSave(string fullPath)
         {
@@ -25,6 +26,7 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
                 throw new InvalidFormatException("File doesn't appear as an LSV package!");
 
             FullPath = fullPath;
+            SaveRoot = Path.GetDirectoryName(FullPath);
             using (PackageReader reader = new PackageReader(FullPath))
             {
                 package = reader.Read();
@@ -61,7 +63,7 @@ namespace craftersmine.BaldursGate3.SaveManager.Core
 
         public void Delete()
         {
-            Directory.Delete(Path.GetDirectoryName(FullPath), true);
+            Directory.Delete(SaveRoot, true);
         }
     }
 }
