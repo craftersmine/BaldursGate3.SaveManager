@@ -19,3 +19,5 @@ Save manager for Larian Studios' game Baldur's Gate 3
 * Download latest application archive [here](https://github.com/craftersmine/BaldursGate3.SaveManager/releases)
 * Extract in whatever folder your soul wants
 * Launch `craftersmine.BaldursGate3.SaveManager.exe` executable
+
+* **WARNING!** This app will not be able to override Steam Cloud saves, and after save deletion, Steam Cloud will redownload missing saves, this app recommended to be used **without Steam Cloud**!
