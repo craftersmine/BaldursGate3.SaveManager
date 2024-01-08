@@ -5,7 +5,7 @@ Save manager for Larian Studios' game Baldur's Gate 3
 [![GitHub Releases](https://img.shields.io/github/downloads/craftersmine/BaldursGate3.SaveManager/total?label=github%20downloads&logo=github)](https://github.com/craftersmine/BaldursGate3.SaveManager/releases)
 ![Discord](https://img.shields.io/badge/discord-craftersmine-5865f2?logo=discord&logoColor=white)
 ![GitHub Repo stars](https://img.shields.io/github/stars/craftersmine/BaldursGate3.SaveManager)
-![Maintenance](https://img.shields.io/maintenance/yes/2023)
+![Maintenance](https://img.shields.io/maintenance/yes/2025)
 
 ![Repository Preview](https://raw.githubusercontent.com/craftersmine/BaldursGate3.SaveManager/master/.github/AppPreview.png)
 
